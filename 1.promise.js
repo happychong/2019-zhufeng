@@ -9,14 +9,24 @@
 // 5) 每个promise都有一个then方法  -  没有完全解决回调问题
 let Promise = require('./promise')
 let p = new Promise((resolve, reject) => {
-    console.log('立即执行')
+    // 立即执行
+    setTimeout(() => {
+        resolve('我有钱');
+        // throw new Error('错误')
+    }, 500);
 })
 p.then(data => {
     // 成功的回调
-
+    console.log('success', data);
 }, err => {
     // 失败的回调
     // 失败的情况
     //  1-调用了reject
     //  2-执行器里抛出异常 throw new Error()
+    console.log('err', err);
+})
+p.then(data => {
+    console.log('success2', data);
+}, err => {
+    console.log('err2', err);
 })
