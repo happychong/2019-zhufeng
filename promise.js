@@ -72,6 +72,7 @@ class Promise {
         try {
             executor(resolve, reject);
         } catch (e) {
+            // 如果reject里
             reject(e);
         }
     }
@@ -127,6 +128,23 @@ class Promise {
             }
         })
         return promise2;
+    }
+    catch(errCallback) {
+        return this.then(null, errCallback);
+    }
+    finallly(callback) {
+        return this.then(callback, callback);
+    }
+    static resolve(value) {
+        // 创建了一个成功的promise
+        return new Promise((resolve, reject) => {
+            resolve(value);
+        })
+    }
+    static reject(reason) {
+        return new Promise((resolve, reject) => {
+            reject(reason);
+        })
     }
 }
 // 导出当前类 commonJs定义方式

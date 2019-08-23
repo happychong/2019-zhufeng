@@ -1,4 +1,4 @@
-const Promise = require('./promise');
+const Promise = require('../promise');
 
 // 如果一个promise then的方法中返回了一个普通值
 
