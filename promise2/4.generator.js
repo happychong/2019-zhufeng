@@ -77,8 +77,8 @@ add(1,2,3,4,5)
 // console.log(it.next(1)) // 这里传参，会传给上一个yield的返回值，也就是a
 // it.throw('xxxError')
 
-
 const fs = require('fs').promises;
+
 function * read() {
     let content = yield fs.readFile('./name.txt', 'utf8');
     let age = yield fs.readFile(content, 'utf8');
@@ -97,12 +97,12 @@ function * read() {
 function co(it) {
     return new Promise((resolve, reject) => {
         // 异步迭代需要先提供一个next方法
-        function next() {
-            let {value, done} = it.next();
+        function next(res) {
+            let { value, done } = it.next(res);
             if (!done) {
                 Promise.resolve(value).then(data => {
                     // it.next(data);
-                    next();
+                    next(data);
                 })
             } else {
                 resolve(value)
@@ -115,4 +115,18 @@ co(read()).then(data => {
     console.log(data);
 }, err => {
     console.log(err);
+})
+
+
+
+const fs = require('fs').promises;
+async function read() {
+    let content = await fs.readFile('./name.txt', 'utf8');
+    let age = await fs.readFile(content, 'utf8');
+    return age
+}
+read().then(data => {
+    console.log(data)
+}, err => {
+    console.log('err: ', err)
 })
