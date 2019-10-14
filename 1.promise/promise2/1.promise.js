@@ -19,3 +19,4 @@ let promise2 = p.then(data => {
 promise2.then(data =>{
     console.log(data);
 })
+
