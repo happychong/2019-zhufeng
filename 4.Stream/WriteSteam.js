@@ -17,6 +17,7 @@ class WriteStream extends EventEmitter{
         this.writing = false;
         this.len = 0; // 缓存区的大小
         this.needDrain = false; // 是否触发drain事件
+        this.offset = this.start;
         this.isClosed = false;
     }
     open() {
@@ -32,8 +33,6 @@ class WriteStream extends EventEmitter{
         // 判断是否正在写入，是的话先放入缓存中
         chunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
         this.len += chunk.length; // 统计写入数据的个数
-        // console.log('this.len:', this.len);
-        
         let flag = this. len < this.highWaterMark;
         this.needDrain = !flag; // 正好是相反操作 只有当前写入的内容>=highWaterMark，才会触发
         if (this.writing) {
@@ -61,8 +60,9 @@ class WriteStream extends EventEmitter{
                 })
             });
         }
-        fs.write(this.fd, chunk, (err) => {
-            this.len -= chunk.length;
+        fs.write(this.fd, chunk, 0, chunk.length, this.offset, (err, written) => {
+            this.len -= written;
+            this.offset += written;
             this.writing = false;
             clearBuffer();
         });

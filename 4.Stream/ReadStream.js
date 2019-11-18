@@ -12,16 +12,34 @@ class ReadStream extends EventEmitter {
         this.mode = options.mode || 438;
         this.autoClose = options.autoClose == false ? false : true;
         this.start = options.start || 0;
-        this.end = options.end || null;
+        this.end = options.end || 2e17;
 
         this.flowing = false; // 默认是暂停模式
         this.offset = 0; // 读文件的偏移量
+        this.isClosed = false;
+        this.isFinished = false;
         this.open(); // 打开文件 当创建可读流时 就打开文件 (异步执行)
         this.on('newListener', (type) => {
             if (type === 'data') { // 当用户监听data事件的时候 就开始读取文件
                 this.flowing = true;
                 this.read();
             }
+        })
+    }
+    pipe(ws) {
+        let rs = this;
+        this.on('data', function (chunk) {
+            let flag = ws.write(chunk);
+            if (!flag) {
+                this.pause();
+            }
+        })
+        this.on('end', function (chunk) {
+            rs.close();
+            ws.close();
+        })
+        ws.on('drain', function () {
+            rs.resume();
         })
     }
     read() {
@@ -33,19 +51,27 @@ class ReadStream extends EventEmitter {
         let howMuchToRead
             = this.end
                 ? Math.min(this.highWaterMark, this.end - this.offset)
-                : this.highWaterMark;        
+                : this.highWaterMark;      
         fs.read(this.fd, buffer, 0, howMuchToRead, this.offset, (err, bytesRead) => {
             this.offset += bytesRead;
             if (bytesRead > 0) {
                 // 只要读取到了内容，就emit出去
+                if (howMuchToRead > bytesRead) {
+                    buffer = buffer.slice(0, bytesRead);
+                }
                 this.emit('data', buffer);
             }
             if (bytesRead > 0 && bytesRead === this.highWaterMark) {
                 // 如果读取到了内容，并且读取到的内容长度和highWaterMark相同 就再次尝试读取，以免多次读取
                 this.flowing && this.read();
             } else {
-                this.emit('end');
-                this.close();
+                if (!this.isFinished) {
+                    this.isFinished = true;
+                    this.emit('end');
+                }
+                if (this.autoClose) {
+                    this.close();
+                }
             }
         })
     }
@@ -56,11 +82,10 @@ class ReadStream extends EventEmitter {
         })
     }
     close() {
-        if (this.autoClose) {
-            fs.close(this.fd, (err) => {
-                this.emit('close')
-            })
-        }
+        this.isClosed = true;
+        fs.close(this.fd, (err) => {
+            this.emit('close')
+        })
     }
     pause() {
         this.flowing = false;

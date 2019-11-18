@@ -22,12 +22,12 @@ let ws = new WriteStream(path.resolve(__dirname, '1.txt'), {
 let index = 0;
 function write() {
     let flag = true;
-    while(index < 20 && flag) {
-        flag = ws.write(index + ' ');
+    while(index < 10 && flag) {
+        flag = ws.write(index + '');
         // console.log(flag);
         index++;
     }
-    if (index > 19) {
+    if (index > 9) {
         ws.end('hello');
         // ws.end(' ss');
     }
