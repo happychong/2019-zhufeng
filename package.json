@@ -1,0 +1,28 @@
+{
+  "name": "study",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "5http-use": "nodemon ./5.http/useNodehttp.js",
+    "5http-static": "nodemon ./5.http/static.js",
+    "5http-staticHttpClass": "nodemon ./5.http/staticHttpClass.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/happychong/2019-zhufeng.git"
+  },
+  "author": "happychong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/happychong/2019-zhufeng/issues"
+  },
+  "homepage": "https://github.com/happychong/2019-zhufeng#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "mime": "^2.4.4"
+  }
+}
