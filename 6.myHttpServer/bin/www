@@ -1,0 +1,10 @@
+#! /usr/bin/env node
+
+// 这个文件的作用，只做require，源代码在src下
+
+// babel es6 -> es5
+// @babel/cli 在命令行中编辑代码
+// @babel/core 解析核心模块
+// @babel/preset-env 将es6转化为es5
+
+require('../dist/main.js');
