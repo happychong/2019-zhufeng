@@ -1,0 +1,35 @@
+{
+    "presets": [
+        // presets 执行顺序从下往上执行
+        ["@babel/preset-env", {
+            // 构建时候，如果用到了实例上的某API，按需加载转化
+            "useBuiltIns": "usage",
+            // useBuiltIns 转化的时候，不知道includes是字符串的，还是数组的，需要corejs，就是bable-core
+            // corejs == 以前的 babel-polyfill
+            "corejs": 3
+        }],
+        "@babel/preset-react",
+        // 先把 ts 转成 js，再转react ，最后再转成 es5
+        ["@babel/preset-typescript", {
+            "allExtensions": true
+        }]
+    ],
+    "plugins": [
+        // 执行顺序：从上到下执行
+
+        // ** 解析装饰器 **
+        // @babel/plugin-proposal-decorators 要用在 @babel/plugin-proposal-class-properties 之前
+        // legacy: true --- 保留装饰器，，legacy 为 true 的条件，下面的 loose 也得是 true
+        ["@babel/plugin-proposal-decorators", {"legacy": true}],
+
+        // ** 解析类 **
+        // 类的插件 之类一个数组是一项，写成数组是为了传参
+        // loose:宽松,loose为true的话，可以用装饰器，为false的话，会打包转化成definePropty
+        ["@babel/plugin-proposal-class-properties", {"loose": true}],
+
+        // ** 减少打包代码冗余 **
+        // 多个模块转化时候，会产生打包的冗余代码
+        // 比如多个文件都class A的方式创建类，那么打包后多个包中都有_classCallCheck方法
+        "@babel/plugin-transform-runtime"
+    ]
+}

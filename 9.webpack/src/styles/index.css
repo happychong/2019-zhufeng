@@ -1,0 +1,16 @@
+@import './a.css';
+
+body {
+    background-color: cadetblue;
+    transform: rotate(5deg);
+}
+/* 以下为未用到的样式 生产打包时候，需要删掉 */
+.div {
+    color: yellow;
+}
+.div1 {
+    color: rebeccapurple;
+}
+.div2 {
+    color: lightcoral;
+}
