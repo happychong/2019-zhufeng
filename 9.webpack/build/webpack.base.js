@@ -9,6 +9,13 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const glob = require('glob'); // 查找匹配的文件
 // 删除无意义的css，只能配合mini-css-extract-plugin
 const PurgeCssWebpackPlugin = require('purgecss-webpack-plugin');
+// js管理cdn资源引入插件 添加html资源作为cdn的webpack插件
+const AddAssetHtmlCdnWebpackPlugin = require('add-asset-html-cdn-webpack-plugin');
+// 引用打包好的第三方库
+const DllReferencePlugin = require('webpack').DllReferencePlugin;
+// 把打包好的第三方库的js，在html引入
+const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin');
+
 
 
 const dev = require('./webpack.dev');
@@ -24,14 +31,27 @@ module.exports = (env) => {
         // js - react 入口文件
         // entry: path.resolve(__dirname, '../src/index.js'),
         // react - ts 入口文件
-        entry: path.resolve(__dirname, '../src/index-react.tsx'),
+        // entry: path.resolve(__dirname, '../src/index-react.tsx'),
         // vue - ts 入口文件
         // entry: path.resolve(__dirname, '../src/index-vue.ts'),
+
+        // entry 优化
+        entry: path.resolve(__dirname, '../src/index-optimize.js'),
         output: {
             filename: 'bundle.js',
             // 出口位置 要用绝对路径
             path: path.resolve(__dirname, '../dist')
         },
+        // 优化项配置
+        optimization: {
+            // 开发模式下，使用了哪个模块，打包代码中提示一下
+            usedExports: true
+        },
+        // externals - 外部变量
+        // externals: {
+        //     // 代码中，import $ 的时候，使用 $ 的时候，是外部变量，不需要被打包
+        //     'jquery': '$'
+        // },
         module: {
             // 转化什么文件 用什么去转 使用哪些loader
             rules: [
@@ -74,16 +94,59 @@ module.exports = (env) => {
                 {
                     test: /\.(jpe?g|png|gif)$/,
                     // use: 'file-loader' // file-loader 默认功能是拷贝
-                    use: {
-                        loader: 'url-loader', 
-                        // 希望当前比较小的图片转化为 base64 ，转化后尺寸比以前大，但是不用发http请求了
-                        options: {
-                            // 大于 100k 的图片，会用 file-loader
-                            limit: 8 * 1024, // 一般为 8*1024
-                            // 打包到目录下
-                            name: 'image/[contentHash].[ext]'
+                    // use: {
+                    //     loader: 'url-loader', 
+                    //     // 希望当前比较小的图片转化为 base64 ，转化后尺寸比以前大，但是不用发http请求了
+                    //     options: {
+                    //         // 大于 100k 的图片，会用 file-loader
+                    //         limit: 8 * 1024, // 一般为 8*1024
+                    //         // 打包到目录下
+                    //         name: 'image/[contentHash].[ext]'
+                    //     }
+                    // }
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            // 希望当前比较小的图片转化为 base64 ，转化后尺寸比以前大，但是不用发http请求了
+                            options: {
+                                // 大于 100k 的图片，会用 file-loader
+                                limit: 8 * 1024, // 一般为 8*1024
+                                // 打包到目录下
+                                name: 'image/[contentHash].[ext]'
+                            }
+                        },
+                        (!isDev) && {
+                            // 可以在使用file-loader之前 对图片进行压缩
+                            loader: 'image-webpack-loader',
+                            options: {
+                                // jpeg格式
+                                mozjpeg: {
+                                    progressive: true,
+                                    quality: 65
+                                },
+                                // optipng.enabled: false will disable optipng
+                                // 是否禁用png压缩：不禁用
+                                optipng: {
+                                    enabled: false,
+                                },
+                                // png格式
+                                pngquant: {
+                                    // 清晰度 64% - 90% 之间
+                                    quality: [0.65, 0.90],
+                                    speed: 4
+                                },
+                                // gif格式
+                                gifsicle: {
+                                    interlaced: false,
+                                },
+                                // the webp option will enable WEBP
+                                // bp格式
+                                webp: {
+                                    quality: 75
+                                }
+                            }
                         }
-                    }
+                    ].filter(Boolean)
                 },
                 {
                     // 图标字体，一般不转base64，有时会失效
@@ -129,6 +192,16 @@ module.exports = (env) => {
             new PurgeCssWebpackPlugin({
                 // glob.sync: 返回包含 src 目录下所有（深层）文件的文件名的数组
                 paths: glob.sync("./src/**/*", { nodir: true })
+            }),
+            new AddAssetHtmlCdnWebpackPlugin(true, {
+                'jquery': 'https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js'
+            }),
+            new DllReferencePlugin({
+                manifest: path.resolve(__dirname, '../dll/manifest.json')
+            }),
+            // 把dll下的react.dll.js，拷贝到dist目录下，并引入index.html
+            new AddAssetHtmlWebpackPlugin({
+                filepath: path.resolve(__dirname, '../dll/react.dll.js')
             })
         ].filter(Boolean) // filter 过滤掉false，解决 !isDev && new XXX()的插件
     };

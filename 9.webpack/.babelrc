@@ -9,10 +9,10 @@
             "corejs": 3
         }],
         "@babel/preset-react",
-        // 先把 ts 转成 js，再转react ，最后再转成 es5
-        ["@babel/preset-typescript", {
-            "allExtensions": true
-        }]
+        // 先把 ts 转成 js，再转react ，最后再转成 es5 --优化测试注释掉，基础设置不注释--
+        // ["@babel/preset-typescript", {
+        //     "allExtensions": true
+        // }]
     ],
     "plugins": [
         // 执行顺序：从上到下执行

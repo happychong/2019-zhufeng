@@ -39,3 +39,8 @@ function log(target) {}
 import React from 'react';
 import ReactDOM from 'react-dom';
 ReactDOM.render(<div>hello</div>, document.getElementById('react-root'));
+
+
+// tree-shaking 去掉没用的代码，只支持es6模块,因为es6是静态导入，可以在使用之前分析用到哪些
+import { minus } from './calc.js';
+console.log(minus(1, 2));

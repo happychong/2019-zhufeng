@@ -1,16 +1,21 @@
 @import './a.css';
 
 body {
+    background-image: url('../timg.jpg');
     background-color: cadetblue;
     transform: rotate(5deg);
 }
 /* 以下为未用到的样式 生产打包时候，需要删掉 */
-.div {
+.test {
     color: yellow;
 }
-.div1 {
+.test1 {
     color: rebeccapurple;
 }
-.div2 {
+.test2 {
     color: lightcoral;
+}
+
+body {
+    font-size: xx-large;
 }
