@@ -6,8 +6,6 @@
 
 let path = require('path');
 const DLLPlugin = require('webpack').DllPlugin;
-console.log(DLLPlugin);
-
 module.exports = {
     mode: 'production',
     // entry: './src/calc.js', // 其中包含 add & minus
@@ -15,7 +13,8 @@ module.exports = {
     output: {
         // 打包后，接受自执行函数的名字
         library: 'react',
-        // 默认用var 模式： commonjs commonjs2 umd（amd+cmd+commonjs） this , 一般node用commonjs2
+        // 默认用var 模式： commonjs commonjs2 umd（amd+cmd+commonjs） this ,
+        // 一般node用commonjs2,如果只是想接收一下变量，libraryTarget可以不设置，用全局的方式接收
         libraryTarget: 'var',
         // 打包后的名字
         filename: 'react.dll.js',
@@ -27,7 +26,9 @@ module.exports = {
             name: 'react',
             // manifest.json 中，会把我们打包的react.dll.js中用到的所有模块都列出
             path: path.resolve(__dirname, '../dll/manifest.json')
-            // 打包的时候 会配置cleanwebpackgplgin,所以不放在dist里，否则每次打包都被删除了
-        })
+                // 打包的时候 会配置cleanwebpackgplgin,所以不放在dist里，否则每次打包都被删除了
+        }),
+        // 讲解：本地使用了import React 语法，需要先去 manifest.json 中查找
+        // 找到后会加载对应的库的名字（ex:react）,可能会引用某个模块，会去dll.js文件中查找
     ]
 }
