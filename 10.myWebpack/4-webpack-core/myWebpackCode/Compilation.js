@@ -64,7 +64,7 @@ class Compilation extends Tapable{
       let chunk = new Chunk(entryModule);
       this.chunks.push(chunk);
       // 模块的名字和代码的名字一致，这个模块就属于这个代码
-      this.chunks.modules = this.modules.filter(module => module.name === chunk.name);
+      // this.chunks.modules = this.modules.filter(module => module.name === chunk.name);
       chunk.modules = this.modules.filter(module => module.name === chunk.name);
     }
     this.hooks.afterChunks.call();
