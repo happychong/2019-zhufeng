@@ -1,0 +1,20 @@
+{
+  "name": "13.ast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "escodegen": "^1.14.1",
+    "esprima": "^4.0.1",
+    "estraverse": "^5.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "babel-types": "^6.26.0"
+  }
+}
