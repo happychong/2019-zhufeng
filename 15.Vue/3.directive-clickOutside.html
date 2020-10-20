@@ -1,0 +1,67 @@
+<!-- Vue clickOutside指令 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue clickOutside指令</title>
+  <style>
+    .input { border: 1px solid red;}
+    .content { background-color: bisque;}
+  </style>
+</head>
+<body>
+  <div id="app">
+    日历控件 | 弾层 ： 
+    <div v-click-outside>
+      <input type="text" class="input"/>
+      <div v-if="isShow" class="content">
+        内容
+        <button>加载更多内容</button>
+      </div>
+    </div>
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+
+    let vm = new Vue({
+      el: '#app',
+      directives: {
+        // 局部指令 只当前vm有效
+        clickOutside:{
+          // 可以实现 点击时判断是否存在当前dom中
+          bind(el, bindings, vNode) {
+            el.fn = (e) => {
+              if (el.contains(e.target)) {
+                vNode.context.showContent();
+              } else {
+                vNode.context.hideContent();
+              }
+            };
+            document.addEventListener('click', el.fn);
+          },
+          unbind(el) {
+            // 事件绑定必须要解绑
+            document.removeEventListener('click', el.fn);
+          }
+        }
+      },
+      data: {
+        isShow: false
+      },
+      methods: {
+        showContent() {
+          this.isShow = true;
+        },
+        hideContent() {
+          this.isShow = false;
+        }
+      },
+    })
+  </script>
+</body>
+</html>
+
+
+
+

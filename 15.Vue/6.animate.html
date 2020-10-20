@@ -1,0 +1,53 @@
+<!-- computed & watch -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue animate动画</title>
+  <style>
+    .input { border: 1px solid red;}
+    .content { background-color: red; width: 100px; height: 100px;}
+    .v-enter { background-color: blue;} /* 进入前 */
+    .v-enter-active { background-color: purple; transition: all 3s linear;}
+    /* 进入中 这里写颜色会立刻替换掉v-leave中的颜色*/
+    .v-enter-to { background-color: greenyellow;} /* 进入后 */
+    .v-leave { background-color:burlywood;} /* 要离开的时候，会立刻替换掉之前的颜色 */
+    .v-leave-active { background-color:chocolate; transition: all 3s linear;}
+    /* 离开时 这里写颜色会立刻替换掉v-leave中的颜色 */
+    .v-leave-to { background-color:cadetblue;} /* 离开后 */
+    /* 动画最终变成红色 */
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button @click="change">点击</button>
+    <transition>
+      <div v-if="isShow" class="content">
+        content
+      </div>
+    </transition>
+  </div>
+
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    // Vue 中的动画 需要有 v-if v-for v-show 路由切换 才能触发动画
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        isShow: 'z3',
+      },
+      methods: {
+        change() {
+          this.isShow = !this.isShow;
+        }
+      }
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+

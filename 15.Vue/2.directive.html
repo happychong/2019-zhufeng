@@ -1,0 +1,61 @@
+<!-- Vue 指令（directive） -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue 自定义指令（directive）</title>
+</head>
+<body>
+  <div id="app">
+   1<input type="text" v-focus1.a.b.c="'xxx'"/> 
+   2<input type="text" v-focus2.color="'red'"/> 
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    // 全局指令
+    // 设置方法1 = 设置方法2中只有 bind 和 update 的语法糖
+    Vue.directive('focus1', function (el, bindings, vNode) {
+      // el - 当前指令元素
+      // bindings - 绑定属性（修饰符-modifiers、表达式-expression、value等）
+      // vNode - 虚拟节点 有context属性代表当前指令的上下文
+
+      // 这个方法默认只在 bind（绑定）的时候和 update(更新-当前指令依赖的数据变化)的时候才会被执行
+      console.log(el, bindings, vNode);
+      el.focus(); // 没效果 因为页面还没初始化好el这个dom节点 应该插入dom之后再执行focus方法，如inserted中
+    });
+    // 设置方法2
+    Vue.directive('focus2', {
+      // 指令的触发周期顺序(最常用的) bind -> inserted -> update -> unbind
+      // bind (el, bindings, vNode) {
+      //   console.log(el, bindings, vNode);
+      //   el.focus();
+      //   // 可以用 nextTick 实现 inserted 效果
+      // },
+      // update (el, bindings, vNode) {
+      //   console.log(el, bindings, vNode);
+      //   el.focus();
+      // },
+      inserted(el, bindings, vNode) {
+        // 插入（初始化）dom之后执行此方法
+        // 指令 focus2 中，有修饰符color的，把dom边框变成设置的颜色
+        if (bindings.modifiers.color) {
+          el.style.borderColor = bindings.value;
+        }
+        el.focus(); // focus2 指令的元素自动获取焦点
+      },
+      unbind() {
+        // 指令小会的时候 会触发此函数
+      }
+    });
+
+    let vm = new Vue({
+      el: '#app'
+    })
+  </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,87 @@
+<!-- 生命周期 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue 生命周期</title>
+</head>
+<body>
+  
+  <div id="app">
+    dom中的挂载节点的内容
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    // 生命周期的执行是同步的，其中包含异步逻辑的话，不会等待，直接执行后续的函数
+    let vm = new Vue({
+      // 当前这个实例他的父亲是谁 儿子是谁
+      beforeCreate() {
+        // 组件创建之前 - 初始化好了基础属性，基础事件（$on $emit 等）
+        // 但this（vm）中不包含vm的数据(data)、方法、watch等，所以基本上业务逻辑不需要使用这个钩子
+        // 混合 ： 我希望在每个组件中增加一些特定的属性，可以采用这个钩子
+        console.log(1, 'beforeCreate-组件创建之前--', this.n); // 没有n
+      },
+      created() {
+        // 创建完成 - 当前这个组件实例，已经实现了数据劫持（数据已经加了get，set），并把方法、计算属性都挂载到了实例上
+        // 但是不能获取到真是的dom元素，不能操作dom
+        console.log(2, 'created-创建完成--', this.$el); // 没有dom
+      },
+      // el: '#app', // 同vm.$mount('#app');
+      render(h) {
+        // 如果有的render 就不会使用template内容了，
+        console.log(4, 'render');
+        return h('div', {}, ['render方法创建的'])
+      },
+      // template: `<div>hello</div>`, // 会把template变成render方法
+      data() {
+        return {
+          n: 1
+        }
+      },
+      beforeMount() {
+        // 挂载之前 - beforeMount中会默认调用render方法
+        console.log(3, 'beforeMount-挂载之前 --', this.$el);
+      },
+      mounted() { // 这个过程中，如果有子组件，会走子组件的生命周期，洋葱模式
+        // 当前组件挂载完成 - 有了真实的dom
+        // 一般把ajax的操作，在这里完成，既能得到vm数据，又有$el方便操作
+        console.log(5, 'mounted-挂载完成 --', this.$el);
+      },
+      // Vue 更新方式是组件级别的
+      // 组件化的好处 1：方便复用，好维护 2：减少不必要的更新渲染
+      beforeUpdate() {
+        // 更新之前 - Vue的更新是diff更新，需要更新的数据在视图中显示，才会触发beforeUpdate
+        console.log('beforeUpdate-更新之前');
+        // 我们可以在这里增加一些数据更新，不会导致视图多次更新，很少用
+      },
+      updated() { // 这里不要再更新数据，可能会死循环
+        // 更新完成
+        console.log('updated-更新完成');
+      },
+      // 触发销毁的方式：- 销毁后会默认移除所有观察者，移除监听事件（watcher.active = false），视图并不会刷新
+      // 1-手动移除组件（vm.$destroy()）
+      // 2-路由切换
+      beforeDestroy() {
+        // 销毁之前 - 可以做事件移除 清空定时器等
+        console.log('beforeDestroy-销毁之前');
+      },
+      destroyed() {
+        // 销毁后
+        console.log('destroyed-销毁后');
+      },
+    });
+    // $mount 挂载节点
+    vm.$mount('#app');
+    // 可以指定一个元素，作为渲染内容的父节点
+    // vm.$mount();
+    // 不指定（参数为空）元素的话，内部会默认渲染到内存中的一个节点，可以原生js自己appendChild到页面中
+
+    // 创建的内容-优先级：
+    // 1：render方法中返回的dom节点
+    // 2：template。会把template变成render方法
+    // 3：dom中的挂载节点的内容 ex. <div id="app">
+    console.log(vm.$el);
+  </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!-- computed & watch -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue computed</title>
+</head>
+<body>
+  <div id="app">
+    getFullName: {{ getFullName() }} <br>
+    b: {{ b }} </br>
+    computedFullName: {{ computedFullName }} </br>
+    ----------------------------------------------- </br>
+    全选、非全选 </br>
+    <input type="checkbox" v-model="checkAll"> </br>
+    <input type="checkbox" v-for="(check, index) in checks" v-model="check.value" :key="index">
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        firstName: 'zhh',
+        lastName: '2',
+        b: 2,
+        checks: [
+          { value: false },
+          { value: true }
+        ]
+      },
+      methods: {
+        getFullName() {
+          console.log('getFullName run !');
+          return this.firstName + this.lastName
+        }
+      },
+      computed: { // 内部实现是 defineProperty   computed 的函数只能是同步的
+        computedFullName() { // get 方法
+          console.log('computedFullName run !');
+          return this.firstName + this.lastName
+        },
+        
+        checkAll: {
+          get() {
+            // 如果一个为false，就为false
+            return this.checks.every(check => check.value);
+          },
+          set(newValue) {
+            // set 用的比较少
+            this.checks.forEach(item => {
+              item.value = newValue;
+            });
+          }
+        }
+      }
+    });
+    console.log('-------------------分割线--------------------');
+    // vm.b = 3; // getFullName() 会执行，函数没有缓存，更改别的属性-页面渲染，函数也会被执行, computedFullName 不执行
+    vm.firstName = 'zh'; // computedFullName 会执行，getFullName也会被执行
+  </script>
+</body>
+</html>
+
+
+
+

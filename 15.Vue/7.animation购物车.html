@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .li { width: 150px; height: 80px; border: 1px solid #333; list-style: none;}
+    .cart { background-color: brown; position: fixed; bottom: 0; right: 0;width: 150px;
+      height: 80px; line-height: 80px; text-align: center; color: aliceblue;}
+    .animate { position: absolute; width: 150px; height: 80px; display: block; transition: all 1s linear;
+      border: 1px solid coral; background-color: chocolate; text-align: center; font-size: 30px;}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <li v-for="(item, index) in lists" class="li" ref="lists">
+        {{ item.name }}
+        <button @click="addCart(index)">加入购物车</button>
+      </li>
+    </ul>
+
+    <div class="cart" ref="cart">快到碗里来！</div>
+    <transition @enter="enter" @after-enter="after">
+      <span class="animate" v-show="isShow">+</span>
+    </transition>
+  </div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      methods: {
+        enter(el, done) {
+          // el - 当前动画元素   done - 动画完事之后的回调方法
+          let li = this.$refs.lists[this.curIndex];
+          let {x, y} = li.getBoundingClientRect(); // 获取横、纵坐标位置
+          el.style.top = y + 'px';
+          el.style.left = x + 'px';
+          let {x:a, y:b} = this.$refs.cart.getBoundingClientRect();
+          this.$nextTick(() => {
+            el.style.transform = `translate3d(${a-x}px, ${b-y}px, 0) scale(0, 0)`;
+            el.addEventListener('transitionend', done); // done 调用之后，才会调用after
+          });
+        },
+        after(el) {
+          this.isShow = false;
+          el.style = 'display: none';
+        },
+        addCart(index) {
+          console.log(index);
+          this.curIndex = index;
+          this.isShow = true;
+        }
+      },
+      data() {
+        return {
+          isShow: false,
+          curIndex: -1,
+          lists: [
+            {name: '商品1', id: 1},
+            {name: '商品2', id: 1},
+            {name: '商品3', id: 3},
+          ]
+        }
+      }
+    })
+  </script>
+</body>
+</html>

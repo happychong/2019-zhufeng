@@ -1,0 +1,39 @@
+<!-- 组件 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>组件</title>
+</head>
+<body>
+  <div id="app">
+    <all-component></all-component>
+    <all-component></all-component>
+    <!-- </all-component></all-component></all-component> -->
+    <!--
+      html中应用要注意：
+      1.不支持自定义闭合标签
+      2.标签名不要和原生标签重名
+      3.如果组件名有大写的情况会默认转为小写，会有问题，因为html标签无大写，要全部采用小写+短横线（-）方式
+      4.组件应该是独立的，每个组件间应该是不想管的，并且单项数据流，所以data要是函数，返回独立的{}
+    -->
+  </div>
+  
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    // 组件的目的：复用、方便维护、减少渲染
+    // 组件的分类：全局组件、局部组件、指令组件
+    Vue.component('all-component', {
+      template: `<div>全局组件内容</div>`,
+      data() {
+        return {}
+      }
+    });
+
+    let vm = new Vue({
+      el: '#app'
+    })
+  </script>
+</body>
+</html>

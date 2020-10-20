@@ -1,0 +1,87 @@
+<!-- computed & watch -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue clickOutside指令</title>
+  <style>
+    .input { border: 1px solid red;}
+    .content { background-color: bisque;}
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        name: 'z3',
+        // name: {
+        //   n: 'l4'
+        // }
+      },
+      // watch: {
+      //   // 当一个值变化了，可以做其他的事
+      //   name: {
+      //     handler(newValue) {
+      //       console.log('watch ::', newValue);
+      //     },
+      //     immediate: true, // 立即执行handler 初始化时候就执行
+      //     deep: true, // 深度监控 ex. name.n 变化，也会触发 watch 方法，newValue 是name，不是name.n
+      //     lazy: true // 是 computed 的实现
+      //   }
+      // },
+      computed: {
+        fullName() {
+          return vm.name + '-jw'
+        }
+      }
+    });
+
+    // Vue 的 watch 实现 - 注释掉上面的watch，这里模拟设置监控
+    // function initWatch(watch) {
+    //   for (let key in watch) {
+    //     vm.$watch(key, watch[key]);
+    //   }
+    // }
+    // initWatch({
+    //   name(newValue) {
+    //     console.log(newValue);
+    //   }
+    // })
+
+    // Vue 的 computed 实现 - 注释掉上面的computed，这里模拟设置 computed
+    // let dirty = true; // 获取过就不再执行handler方法，直接返回已经计算出的结果
+    // function initComputed(key, handler) {
+    //   let value;
+    //   Object.defineProperty(vm, key, {
+    //     get() {
+    //       if (dirty) {
+    //         value = handler();
+    //         dirty = false;
+    //       }
+    //       return value;
+    //     }
+    //   })
+    // }
+    // initComputed('fullName', () => {
+    //   console.log('computed handler run');
+    //   return vm.name + 'jw'
+    // });
+    // vm.fullName
+    // vm.fullName
+    // // ↑ vm.fullName 重新获取，不重新执行handler方法
+    // vm.name = 'xxx';
+    // dirty = true; // name 重新赋值，实际相当于 dirty 重置为 true
+    // vm.fullName // 所以这里获取 fullName ，重新执行handler方法
+
+  </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue animate 导航</title>
+  <style>
+    .nav,
+    .nav-item { width: 50px; height: 50px; background-color: red; border-radius: 50%;
+      text-align: center; line-height: 50px; position: fixed; bottom: 25px; left: 50%; color: #fff;
+      margin: -25px; transform: translate(0); opacity: 1;}
+    /* 下面设置每一个的结束位置 */
+    .nav-list :nth-child(1) { transform: translate(-80px);}
+    .nav-list :nth-child(2) { transform: translate(-60px, -60px);}
+    .nav-list :nth-child(3) { transform: translate(0, -80px);}
+    .nav-list :nth-child(4) { transform: translate(60px, -60px);}
+    .nav-list :nth-child(5) { transform: translate(80px, 0);}
+    /* 最初位置 to 结束位置 */
+    .nav-list .nav-item.v-enter {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+    .nav-list .nav-item.v-enter-active, .nav-list .nav-item.v-leave-active {
+      transition: all 0.5s ease-in-out;
+    }
+    .nav-list .v-leave-to {transform: translate(0, 0);opacity: 0;}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="nav-list" ref="box">
+      <transition-group> 
+        <!-- <transition-group name="move" enter-active-class="xxx" leave-active-class="yyy"> -->
+        <!-- name对应样式中 v-enter 中的 v   ex. .move-enter  -->
+        <!-- enter-active-class 对应 .v-enter-active 中的 enter-active -->
+        <!-- leave-active-class 对应 .v-leave-active 中的 leave-active -->
+        <div class="nav-item" v-for="i in count" :key="i" v-show="isShow">{{ i }}</div>
+      </transition-group>
+    </div>
+    <div class="nav" @click="change">导航</div>
+  </div>
+
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          isShow: false,
+          count: 6
+        }
+      },
+      methods: {
+        change() {
+          this.isShow = !this.isShow;
+        }
+      },
+    })
+  
+  </script>
+</body>
+</html>

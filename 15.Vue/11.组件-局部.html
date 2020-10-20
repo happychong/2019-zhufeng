@@ -1,0 +1,65 @@
+<!-- 局部组件 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>局部组件 & 单向数据流</title>
+</head>
+<body>
+  <div id="app">
+    <inner-component :money="money"></inner-component>
+  </div>
+  
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    // 每个组件都应该有3部分 1-html 2-js 3-style
+    let component = {
+      template: `<div>子组件</br>
+        My father's money is {{ money }} .
+        <button @click="addMoney">我赚10元给father</button></br>
+        My house : {{ house }}</br>
+        My dog : {{ dog }}</br>
+        </div>`,
+      data() {
+        return {n: 1}
+      },
+      // props: ['money'], // 直接拿属性用
+      props: { // 对属性进行校验
+        // money: {} // 不校验 等于上面数组写法
+        // money: Number // 
+        money: {
+          type: Number, // 类型校验 - money为Number类型
+          required: true, // 必填校验
+          default: 10 // 设置默认值
+        },
+        house: {
+          type: Array, // Array 或者 Object 类型的时候，并且设置默认值，默认值设置需要用函数返回值方式设置
+          default: () => {
+            return [1]
+          }
+        },
+        dog: {
+          type: Object,
+          default: () => ({a: 1})
+        }
+      },
+      methods: {
+        addMoney() {
+          // this.money = this.money + 10; // 不应该子组件修改父组件的数据
+        }
+      },
+    };
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        money: 100,
+        house: [1, 2, 3]
+      },
+      components: { // 在实例上注册组件
+        'inner-component': component
+      }
+    })
+  </script>
+</body>
+</html>
