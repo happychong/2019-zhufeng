@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable linebreak-style */
 
 <template>
   <div class="home">
@@ -99,12 +101,12 @@ export default {
     this.offsetIndex = 0; // 偏移量
     this.hasMore = true;
   },
-  activated() {
-    // 生命周期 激活：当前页面又显示了
+  activated() { // keep-alive 增加的生命周期
+    // 生命周期 激活：当前页面又显示了,类似mounted，但是不会重新渲染dom元素
     let pos = sessionStorage.getItem("position") || 0;
     this.$refs.list.$el.scrollTop = pos;
   },
-  deactivated() {
+  deactivated() { // keep-alive 增加的生命周期
     // 生命周期 失活：当前页面不显示了
   },
   mounted() {
@@ -120,7 +122,7 @@ export default {
     this[types.SET_CATEGORIES](); // 以上写法改成公共变量
 
     // 记录列表滚动位置
-    // 防抖(定时器)-滑动多次，只触发一次   &    节流(时差)
+    // 防抖(靠定时器)-滑动多次，只触发一次   &    节流(靠时差)
     let timer = null;
     this.$refs.list.$el.addEventListener("scroll", (e) => {
       if (timer) {
@@ -128,8 +130,9 @@ export default {
       }
       // 防抖(定时器)-存储滚动条位置---滑动多次，只触发一次
       timer = setTimeout(() => {
+        // 滚动条位置放到 sessionStorage 中，因为页面关闭后，这个位置就没用了，而且位置变动，不会触发页面刷新，所以不用放到store（vuex）中
         sessionStorage.setItem("position", e.target.scrollTop);
-      });
+      }, 50);
     });
   },
   data() {

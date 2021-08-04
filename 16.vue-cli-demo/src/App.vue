@@ -7,9 +7,11 @@
         <keep-alive v-if="$route.meta.keepAlive">
         <!-- 会根据路径切换 来显示对应的页面 可以应用transition动画 -->
           <router-view/>
+          <!-- keep-alive 中的路由页面，再次进入的时候，mounted不会再执行 -->
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive"/>
       </transition>
+      
     </div>
     <div id="nav">
       <cube-tab-bar

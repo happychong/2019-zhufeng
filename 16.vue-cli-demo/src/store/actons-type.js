@@ -16,3 +16,7 @@ export const SET_USER = 'SET_USER';
 
 // 实时校验用户的登录状态
 export const VALIDATE = 'VALIDATE';
+// 菜单
+export const SET_MENU_LIST = 'SET_MENU_LIST';
+// 头像
+export const SET_AVATAR = 'SET_AVATAR';

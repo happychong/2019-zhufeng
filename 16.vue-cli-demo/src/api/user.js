@@ -18,3 +18,16 @@ export const validate = (user) => {
     data: user
   })
 }
+
+// 上传头像
+export const upload = (fd) => {
+  debugger
+  return axios.request({
+    url: '/upload',
+    method: 'POST',
+    headers: {
+      'content-type': 'multipart/form-data'
+    },
+    data: fd
+  })
+}
