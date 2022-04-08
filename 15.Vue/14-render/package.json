@@ -32,7 +32,14 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "no-debugger": "off",
+      "no-console": "off",
+      "generator-star-spacing": "off",
+      "no-tabs": "off",
+      "no-unused-vars": "off",
+      "no-irregular-whitespace": "off"
+    }
   },
   "browserslist": [
     "> 1%",
